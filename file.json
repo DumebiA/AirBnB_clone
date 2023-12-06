@@ -1,1 +1,1 @@
-[{"id": "531768e6-a78d-4130-a060-fad40cf50a5a", "created_at": "2023-12-06T02:40:24.594921", "updated_at": "2023-12-06T02:40:24.594936", "name": "My_First_Model", "my_number": 89, "__class__": "BaseModel"}]
+[{"__class__": "BaseModel", "created_at": "2023-12-06T23:17:21.620907", "updated_at": "2023-12-06T23:17:21.620926", "my_number": 89, "name": "My_First_Model", "id": "06793483-a2b6-47fc-bd76-5f6575cf3482"}]
