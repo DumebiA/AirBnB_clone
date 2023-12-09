@@ -144,7 +144,7 @@ class HBNBCommand(cmd.Cmd):
                     instances[new_s].save()
                 except AttributeError as e:
                     print(f"AttributeError: {e}")
-            except Exception as e:
+                except Exception as e:
                     print(f"Error: {e}")
 
     def do_count(self, arg):
