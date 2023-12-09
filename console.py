@@ -142,8 +142,10 @@ class HBNBCommand(cmd.Cmd):
                 try:
                     setattr(instances[new_s], arr[2], arr[3])
                     instances[new_s].save()
-                except Exception as e:
-                    print(e)
+                except AttributeError as e:
+                    print(f"AttributeError: {e}")
+            except Exception as e:
+                    print(f"Error: {e}")
 
     def do_count(self, arg):
         """Print the count all class instances"""
