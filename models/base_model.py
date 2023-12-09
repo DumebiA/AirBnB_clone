@@ -1,56 +1,55 @@
 #!/usr/bin/python3
+"""Defines all common attributes/methods for other classes
+"""
 import uuid
 from datetime import datetime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import String, DateTime, Column
 import models
 
-Base = declarative_base()
 
 class BaseModel:
-    id = Column(String(60), unique=True, nullable=False, primary_key=True)
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+    """Base class for all models"""
 
     def __init__(self, *args, **kwargs):
+        """Initializes Base model instance.
+        """
         if kwargs:
+            dat_format = '%Y-%m-%dT%H:%M:%S.%f'
             for key, value in kwargs.items():
-                if key in ["created_at", "updated_at"]:
-                    value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
-                if key != "__class__":
+                if key == '__class__':
+                    continue
+                elif key == 'created_at':
+                    self.created_at = datetime.strptime(
+                        kwargs['created_at'], dat_format)
+                elif key == 'updated_at':
+                    self.updated_at = datetime.strptime(
+                        kwargs['updated_at'], dat_format)
+                else:
                     setattr(self, key, value)
-            if "id" not in kwargs:
-                self.id = str(uuid.uuid4())
-            time = datetime.now()
-            if "created_at" not in kwargs:
-                self.created_at = time
-            if "updated_at" not in kwargs:
-                self.updated_at = time
         else:
             self.id = str(uuid.uuid4())
-            time = datetime.now()
-            self.created_at = time
-            self.updated_at = time
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+            models.storage.new(self)
 
     def __str__(self):
-        return "[{}] ({}) {}".format(type(self).__name__, self.id, self.to_dict())
+        """Returns a readable string representation
+        of BaseModel instances"""
 
-    def __repr__(self):
-        return self.__str__()
+        clsName = self.__class__.__name__
+        return "[{}] ({}) {}".format(clsName, self.id, self.__dict__)
 
     def save(self):
+        """Updates the public instance attribute updated_at
+        with the current datetime"""
+
         self.updated_at = datetime.now()
-        models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):
-        my_dict = self.__dict__.copy()
-        my_dict["__class__"] = type(self).__name__
-        my_dict["created_at"] = self.created_at.isoformat()
-        my_dict["updated_at"] = self.updated_at.isoformat()
-        my_dict.pop('_sa_instance_state', None)  # Remove SQLAlchemy instance state if present
-        return my_dict
-
-    def delete(self):
-        models.storage.delete(self)
-
+        """Returns a dictionary that contains all
+        values of the instance"""
+        result_dict = self.__dict__.copy()
+        result_dict['updated_at'] = self.updated_at.isoformat()
+        result_dict['created_at'] = self.created_at.isoformat()
+        result_dict['__class__'] = self.__class__.__name__
+        return result_dict

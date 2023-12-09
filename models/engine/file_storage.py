@@ -11,7 +11,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 
-class_dict = {
+valid_classes = {
     "BaseModel": BaseModel,
     "User": User,
     "Place": Place,
@@ -51,13 +51,14 @@ class FileStorage:
 
     def reload(self):
         """Deserializes the JSON file to __objects if it exists"""
-        if os.path.exists(type(self).__file_path) is True:
-            return
+        if os.path.exists(type(self).__file_path):
             try:
                 with open(type(self).__file_path, "r") as file:
                     loaded_objects = json.load(file)
-                    for key, val in loaded_objects.items():
-                        obj = class_dict[val['__class__']](**val)
+                    for val in loaded_objects:
+                        key = "{}.{}".format(val['__class__'], val['id'])
+                        obj = valid_classes[val['__class__']](**val)
                         type(self).__objects[key] = obj
-            except Exception:
-                pass
+            except Exception as e:
+                print("Error reloading data:", e)
+
