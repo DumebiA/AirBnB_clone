@@ -110,7 +110,7 @@ class HBNBCommand(cmd.Cmd):
                     for key, value in storage.all().items()
                     if key.startswith(f"{s[0]}.")
                 ]
-            print(class_instances)
+                print(class_instances)
 
     def do_update(self, arg):
         """Update a class instance of a given id by adding or updating
